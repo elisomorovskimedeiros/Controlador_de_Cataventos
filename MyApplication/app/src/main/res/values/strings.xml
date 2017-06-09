@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Controlador_de_Cataventos</string>
+
+    <string name="title_activity_splash_activity">Splash_activity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="titulo">Controlador de Cataventos</string>
+    <string name="titulo_controles">Controles</string>
+    <string name="freio">Freio do Catavento</string>
+    <string name="inversor">Controle do Inversor</string>
+    <string name="frear">frear</string>
+    <string name="liberar">liberar</string>
+    <string name="rede">rede</string>
+    <string name="pos_inversor">inversor</string>
+    <string name="titulo_medicoes">Medições</string>
+    <string name="titulo_configuracoes">Configurações</string>
+    <string name="setar_ip">Insira o ip do Catavento</string>
+    <string name="tensao">Tensão das Baterias</string>
+
+
+</resources>
