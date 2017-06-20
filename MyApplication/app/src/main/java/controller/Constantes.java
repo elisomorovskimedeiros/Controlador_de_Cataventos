@@ -11,6 +11,6 @@ public class Constantes {
     public final static char LIBERAR_CATAVENTO = 'c';
     public final static char LIGAR_INVESOR = 'd';
     public final static char DESLIGAR_INVERSOR = 'e';
-    public final static char TO_ESCUTANDO = 'f';
+    public final static char NA_ESCUTA = 'f';
 
 }

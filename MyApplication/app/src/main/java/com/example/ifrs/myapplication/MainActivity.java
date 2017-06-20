@@ -22,11 +22,13 @@ import android.widget.TextView;
 
 import com.example.eli.controlador_de_cataventos.R;
 
+import controller.Controle;
+
 public class MainActivity extends AppCompatActivity {
     //ImageView imagem_catavento;
     AnimationDrawable animacao_catavento;
     Switch chaveCatavento;
-    EditText byte1, byte2, byte3, byte4;
+    public static EditText[] campoIp;
  //   TextView response;
  //   EditText editTextAddress, editTextPort;
  //   Button buttonConnect, buttonClear;
@@ -80,10 +82,14 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        byte1 = (EditText)findViewById(R.id.byte1);
-        byte2 = (EditText)findViewById(R.id.byte2);
-        byte3 = (EditText)findViewById(R.id.byte3);
-        byte4 = (EditText)findViewById(R.id.byte4);
+        campoIp[0] = (EditText)findViewById(R.id.byte1);
+        campoIp[1] = (EditText)findViewById(R.id.byte2);
+        campoIp[2] = (EditText)findViewById(R.id.byte3);
+        campoIp[3] = (EditText)findViewById(R.id.byte4);
+
+        Controle controle = new Controle();
+        controle.executarConexao(campoIp);
+
 
     }
 

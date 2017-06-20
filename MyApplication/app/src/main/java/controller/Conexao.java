@@ -1,5 +1,6 @@
 package controller;
 
+import android.net.sip.SipSession;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
@@ -12,7 +13,7 @@ import java.net.UnknownHostException;
 
 import model.Controlador;
 
-import static controller.Constantes.TO_ESCUTANDO;
+
 
 /**
  * Created by eli on 06/05/17.
@@ -20,7 +21,8 @@ import static controller.Constantes.TO_ESCUTANDO;
 
 public class Conexao extends AsyncTask<Void, Void, Void> {
 
-    private Controlador arduino;
+    private static Conexao conexao;
+    private static Controlador arduino;
     private int portaConexao;
     private String resposta = "";
     private char comando;
@@ -64,12 +66,12 @@ public class Conexao extends AsyncTask<Void, Void, Void> {
     }
 
 //SINGLETON
-    public Conexao getInstance(char comandoRecebido){
-        if (this == null){
-            return new Conexao(arduino.getInstance(), 3333, comandoRecebido);
+    public static Conexao getInstance(char comandoRecebido, Controlador arduino){
+        if (conexao == null){
+            return new Conexao(arduino, 3333, comandoRecebido);
         }
         else {
-            return this;
+            return conexao;
         }
     }
 
@@ -123,4 +125,6 @@ public class Conexao extends AsyncTask<Void, Void, Void> {
             os.write(data.getBytes());
         }
     }
+
+
 }
