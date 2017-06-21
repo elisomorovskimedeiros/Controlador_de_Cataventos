@@ -276,6 +276,18 @@
                         android:layout_alignEnd="@+id/texto_ip"
                         android:layout_marginEnd="12dp" />
 
+                    <TextView
+                        android:id="@+id/status_rede"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:textSize="15dp"
+                        android:text="Sem comunicação com o controlador"
+                        android:layout_below="@+id/configuracoes"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginTop="35dp" />
+
 
 
 

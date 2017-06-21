@@ -26,6 +26,7 @@ public class Conexao extends AsyncTask<Void, Void, Void> {
     private int portaConexao;
     private String resposta = "";
     private char comando;
+    private boolean statusRede = false;
 
     public Controlador getArduino() {
         return arduino;
@@ -59,6 +60,12 @@ public class Conexao extends AsyncTask<Void, Void, Void> {
         this.comando = comando;
     }
 
+    public boolean isStatusRede() { return statusRede;  }
+
+    public void setStatusRede(boolean statusRede) { this.statusRede = statusRede; }
+
+    public boolean getStatusRede(){ return this.statusRede; }
+
     public Conexao(Controlador arduino, int portaConexao, char comando){
         this.arduino = arduino;
         this.portaConexao = portaConexao;
@@ -80,6 +87,7 @@ public class Conexao extends AsyncTask<Void, Void, Void> {
         Socket socket = null;
         Void respostaLocal;
 
+
         try{
             socket = new Socket(arduino.getIpControlador(), portaConexao);
 
@@ -91,15 +99,17 @@ public class Conexao extends AsyncTask<Void, Void, Void> {
                 byteArrayOutputStream.write(buffer, 0, leituraDados);
                 resposta +=  byteArrayOutputStream.toString("UTF-8");
             }
-
+            statusRede = true;
 
         }catch (UnknownHostException e){
             e.printStackTrace();
             resposta = "Host não encontrado! Excessão encontrada: " + e.toString();
+            statusRede = false;
         }
         catch (IOException a){
             a.printStackTrace();
             resposta = "Falha de IO! Excessão encontrada: " + a.toString();
+            statusRede = false;
         }
         finally {
             if (socket != null){
