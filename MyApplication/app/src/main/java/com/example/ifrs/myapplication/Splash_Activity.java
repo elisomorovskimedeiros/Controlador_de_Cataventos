@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.example.eli.controlador_de_cataventos.R;
 
 public class Splash_Activity extends AppCompatActivity implements Runnable{
 

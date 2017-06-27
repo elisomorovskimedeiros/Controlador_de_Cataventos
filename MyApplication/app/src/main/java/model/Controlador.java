@@ -10,8 +10,14 @@ import java.net.InetAddress;
 
 public class Controlador {
 
+    public static Controlador controlador;
     private boolean statusControlador;
-    private InetAddress ipControlador;
+    //private InetAddress ipControlador;
+    private String ip;
+
+    public String getIp() {  return ip; }
+
+    public void setIp(String ip) {  this.ip = ip; }
 
     public boolean isStatusControlador() {
         return statusControlador;
@@ -20,7 +26,7 @@ public class Controlador {
     public void setStatusControlador(boolean statusControlador) {
         this.statusControlador = statusControlador;
     }
-
+/*
     public InetAddress getIpControlador() {
         return ipControlador;
     }
@@ -28,21 +34,24 @@ public class Controlador {
     public void setIpControlador(InetAddress ipControlador) {
         this.ipControlador = ipControlador;
     }
-
+*/
     @Override
     public String toString() {
         return "Controlador{" +
                 "statusControlador=" + statusControlador +
-                ", ipControlador=" + ipControlador +
+               "ip: " + ip +
                 '}';
     }
 
-    public Controlador getInstance(){
-        if (this == null){
-            return new Controlador();
+    public static Controlador getInstance(){
+        if (controlador == null){
+            controlador = new Controlador();
+            controlador.setIp("127.0.0.1");
+            controlador.setStatusControlador(false);
+            return controlador;
         }
         else{
-            return this;
+            return controlador;
         }
     }
 }
