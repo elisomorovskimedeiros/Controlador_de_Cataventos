@@ -30,8 +30,8 @@
                 <RelativeLayout
                     android:id="@+id/controles"
                     android:layout_width="match_parent"
-                    android:background="#FFA07A"
                     android:layout_height="match_parent"
+                    android:background="#FFA07A"
                     android:orientation="vertical">
 
                     <TextView
@@ -91,48 +91,46 @@
                         android:textAlignment="center"
                         android:textSize="15dp"
                         android:text="@string/inversor"
-                        android:layout_below="@+id/texto_frear"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="35dp"
-                        android:layout_marginTop="35dp" />
+                        android:layout_marginStart="45dp"
+                        android:layout_alignBaseline="@+id/texto_chave_freio"
+                        android:layout_alignBottom="@+id/texto_chave_freio"
+                        android:layout_toEndOf="@+id/animacao" />
 
                     <Switch
                         android:id="@+id/chave_inversor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/texto_chave_inversor"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="80dp"
-                        android:layout_marginTop="35dp"
-                        />
+                        android:layout_marginStart="24dp"
+                        android:layout_alignBottom="@+id/animacao"
+                        android:layout_toEndOf="@+id/texto_rede" />
 
                     <TextView
                         android:text="@string/rede"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/chave_inversor"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="40dp"
-                        android:layout_marginTop="16dp"
-                        android:id="@+id/texto_rede" />
+                        android:id="@+id/texto_rede"
+                        android:layout_alignBaseline="@+id/texto_inversor"
+                        android:layout_alignBottom="@+id/texto_inversor"
+                        android:layout_alignStart="@+id/texto_chave_inversor" />
 
                     <TextView
                         android:text="@string/pos_inversor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/chave_inversor"
-                        android:layout_marginStart="130dp"
-                        android:layout_marginTop="16dp"
-                        android:id="@+id/texto_inversor" />
+                        android:id="@+id/texto_inversor"
+                        android:layout_alignBaseline="@+id/texto_liberar"
+                        android:layout_alignBottom="@+id/texto_liberar"
+                        android:layout_toEndOf="@+id/chave_inversor" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/frame01"
-                        android:layout_marginEnd="29dp"
+                        android:layout_marginTop="20dp"
                         android:id="@+id/animacao"
-                        android:layout_alignTop="@+id/texto_chave_freio"
-                        android:layout_alignParentEnd="true" />
+                        android:layout_above="@+id/texto_liberar"
+                        android:layout_toEndOf="@+id/texto_chave_freio"
+                        android:layout_marginStart="40dp" />
 
 
                 </RelativeLayout>
@@ -184,10 +182,10 @@
                         android:textAlignment="center"
                         android:textSize="15dp"
                         android:text="Giro do Catavento"
-                        android:layout_below="@+id/campo_tensao"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="35dp"
-                        android:layout_marginTop="35dp" />
+                        android:layout_marginStart="106dp"
+                        android:layout_alignBaseline="@+id/texto_tensao"
+                        android:layout_alignBottom="@+id/texto_tensao"
+                        android:layout_alignStart="@+id/medicoes" />
 
                     <TextView
                         android:id="@+id/campo_giro"
@@ -196,10 +194,10 @@
                         android:textAlignment="center"
                         android:textSize="15dp"
                         android:text="0rpm"
-                        android:layout_below="@+id/texto_giro"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="35dp"
-                        android:layout_marginTop="35dp" />
+                        android:layout_marginStart="11dp"
+                        android:layout_alignBaseline="@+id/campo_tensao"
+                        android:layout_alignBottom="@+id/campo_tensao"
+                        android:layout_alignStart="@+id/texto_giro" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -241,6 +239,9 @@
                         android:layout_below="@+id/texto_ip"
                         android:layout_alignStart="@+id/texto_ip" />
 
+
+
+
                     <TextView
                         android:id="@+id/status_rede"
                         android:layout_width="wrap_content"
@@ -248,9 +249,9 @@
                         android:textAlignment="center"
                         android:textSize="15dp"
                         android:text="Sem comunicação com o controlador"
-                        android:layout_below="@+id/campo_ip"
+                        android:layout_below="@+id/configuracoes"
                         android:layout_alignParentStart="true"
-                        android:layout_marginStart="35dp"
+                        android:layout_marginStart="200dp"
                         android:layout_marginTop="35dp" />
 
                     <Button
@@ -262,7 +263,7 @@
                         android:text="Conectar"
                         android:layout_below="@+id/status_rede"
                         android:layout_alignParentStart="true"
-                        android:layout_marginStart="35dp"
+                        android:layout_marginStart="200dp"
                         android:layout_marginTop="35dp" />
 
 

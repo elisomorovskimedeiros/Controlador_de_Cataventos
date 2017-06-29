@@ -2,6 +2,7 @@ package com.example.ifrs.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -33,25 +34,35 @@ import static controller.Constantes.LIGAR_INVESOR;
 import static controller.Constantes.NA_ESCUTA;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    //ImageView imagem_catavento;
-    AnimationDrawable animacao_catavento;
-    Switch chaveCatavento;
-    Switch chaveInversor;
+
+    public AnimationDrawable animacao_catavento;
+    public Switch chaveCatavento;
+    public Switch chaveInversor;
     public EditText campoIp;
-    TextView statusRede;
+    public TextView statusRede;
     public TextView campoTensao;
     public TextView campoGiro;
-    Button conectar;
+    public Button conectar;
     public Conexao conexao;
-    public Controlador controlador;
-    public boolean statusCatavento;
- //   EditText editTextAddress, editTextPort;
- //   Button buttonConnect, buttonClear;
-    TabHost tabHost;
+    //public Controlador controlador;
+    //public boolean statusCatavento;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
+
+        if (getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.activity_main);
+        } else {
+            setContentView(R.layout.activity_landscape);
+        }
+
+
+        //MONTAGEM DAS ABAS DA TELA PRINCIPAL
+        //Cada aba é formada por um objeto tipo TabSpec
 
         TabHost host = (TabHost) findViewById(R.id.tabHost);
         host.setup();
@@ -74,13 +85,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         spec.setIndicator("Configs");
         host.addTab(spec);
 
-
+        // INSTANCIAMENTO DA CLASSE CONEXAO
         conexao = Conexao.getInstance();
-        //Log.i("Controlador", conexao.getControlador().toString());
-
 
         statusRede = (TextView) findViewById(R.id.status_rede);
-        //campoIp = new EditText;
+
         campoIp = (EditText) findViewById(R.id.campo_ip);
 
 
@@ -88,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         conectar.setOnClickListener(this);
 
 
-        //animação
+        //CÓDIGO DA ANIMAÇÃO DO CATAVENTO DA PRIMEIRA ABA
 
         ImageView imagem_catavento = (ImageView) findViewById(R.id.animacao);
         imagem_catavento.setImageResource(R.drawable.animacao);
@@ -97,13 +106,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         chaveCatavento = (Switch) findViewById(R.id.chave_catavento);
+
         //Listener de controle do freio do catavento
         chaveCatavento.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if (isChecked/* && conexao.getStatusRede()*/) {
+                if (isChecked && conexao.getStatusRede()) {
                     conexao.setComando(LIBERAR_CATAVENTO);
                     animacao_catavento.start();
                 } else {
@@ -129,49 +139,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         });
 
+        //INSTANCIAMENTO DOS CAMPO DA SEGUNDA ABA
         campoTensao = (TextView) findViewById(R.id.campo_tensao);
         campoGiro = (TextView) findViewById(R.id.campo_giro);
 
+
+        //THREAD UTILIZADA PARA O PREENCHIMENTO AUTIMOMÁTICO DOS NÍVEIS DE TENSÃO E GIRO NA SEGUNDA ABA
         Thread t = new Thread(){
             @Override
             public void run() {
 
-
+                        //Listener que avisa quando chega a string de comunicação com o servidor
                         conexao.lista.addChangeListener(new IArrayChangeListener<String>() {
 
+
+                            //evento de aviso do preenchimento do array list com as Strings recebidas do servidor
                             @Override
                             public void onChange(EChange action, String changed) {
 
-                                Log.i("Listener", "chamou o listener");
                                 if (conexao.lista.size() > 0) {
                                     Log.i("Listener", conexao.lista.get(conexao.lista.size() - 1));
                                 }
                                 if (action == EChange.added) {
                                     String respToda = "";
-
+                                //linhas que quebra a String recebida e a divinas três medidas esperadas:
+                                    //  status do inversor, tensão das baterias e giro do catavento
                                     if (conexao.lista.size() > 0) {
                                         respToda = conexao.lista.get(conexao.lista.size() - 1);
                                     }
 
                                     final String arrayResp[] = respToda.split(":");
-                                    if( Integer.parseInt(arrayResp[2]) > 20){
-                                        statusCatavento = true;
-                                    }
 
+                                //Fila de execução da thread principal, que atualizará os elementos da tela
                                     runOnUiThread(new Runnable(){
                                         @Override
                                         public void run() {
 
-                                            campoTensao.setText(arrayResp[1]);
-                                            campoGiro.setText(arrayResp[2]);
-                                            chaveCatavento.setChecked(true);
+                                            campoTensao.setText(arrayResp[1] + "V");
+                                            campoGiro.setText(arrayResp[2] + "rpm");
+
                                             if (conexao.getStatusRede()){
+
                                                 statusRede.setText("Controlador ON LINE");
-                                                conectar.setEnabled(false);
-                                            }
-                                            else {
+                                                conectar.setEnabled(false); //DESABILITANDO O BOTÃO DE CONEXÃO
+
+                                                if(!(conexao.getComando() == FREAR_CATAVENTO)// VERIFICANDO SE O CATAVENTO PODE SER LIBERADO
+                                                        && (Integer.parseInt(arrayResp[2]) > 20)){
+                                                    chaveCatavento.setChecked(true);
+                                                }
+                                            }else {
                                                 statusRede.setText("Perda de comunicação com o controlador");
-                                                conectar.setEnabled(true);
+                                                conectar.setEnabled(true); //HABILITANDO O BOTÃO DE CONEXÃO
                                             }
 
 
@@ -182,8 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         });
 
-                //Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
-                //startActivity(mainActivity);
+
             }
         };
         t.start();
@@ -193,62 +210,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-       /*
-        campoIp[3].addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                try {
-                    controle = comunicarControlador();
-*/
 
 
 
 
-
+//  MÉTODO QUE CAPTURA O PRECIONAR DO BOTÃO DE CONEXÃO
     @Override
     public void onClick(View v) {
         String ip = String.valueOf(campoIp.getText());
         conexao.getControlador().setIp(ip);
-        // Log.i("ip_extraído", ip);
-        // Log.i("Controlador", conexao.getControlador().toString());
+// MÉTODO DE CONEXÃO DO SOCKET PROPRIAMENTE DITA
         conexao.executar();
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle estadoFinal) {
+        super.onSaveInstanceState(estadoFinal);
+        Log.i("salvando instancia", "onSaveInstanceState");
+
+        final TabHost host = (TabHost) findViewById(R.id.tabHost);
+        int tab = host.getCurrentTab();
+        estadoFinal.putInt("tab_ativa", tab);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle estadoSalvo){
+        super.onRestoreInstanceState(estadoSalvo);
+        Log.i("restaurando instancia", "onRestoreInstanceState");
+
+        final TabHost host = (TabHost) findViewById(R.id.tabHost);
+        int tab = estadoSalvo.getInt("tab_ativa");
+        host.setCurrentTab(tab);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration estadoSalvo){
+        super.onConfigurationChanged(estadoSalvo);
+    }
 
 
-/*
-    Activity.runOnUiThread(new Runnable(){
-        conexao.lista.addChangeListener(new IArrayChangeListener<String>() {
-
-            @Override
-            public void onChange(EChange action, String changed) {
-
-                Log.i("Listener", "chamou o listener");
-                if (conexao.lista.size() > 0) {
-                    Log.i("Listener", conexao.lista.get(conexao.lista.size()-1));
-                }
-                if(action == EChange.added){
-                    String respToda = "";
-
-                    if (conexao.lista.size() > 0) {
-                        respToda = conexao.lista.get(conexao.lista.size()-1);
-                    }
-
-                    String arrayResp[] = respToda.split(":");
-
-                    MainActivity.campoTensao.setText(arrayResp[1]);
-                    MainActivity.campoGiro.setText(arrayResp[2]);
-                }
-            }
-        });
-    });*/
 }
 
 

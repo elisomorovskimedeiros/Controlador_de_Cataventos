@@ -6,6 +6,7 @@
 
     <application
         android:allowBackup="true"
+        android:icon="@drawable/icone_catavento"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
@@ -24,7 +25,9 @@
         <!-- Activity Principal -->
         <activity
             android:name="com.example.ifrs.myapplication.MainActivity"
-            android:label="@string/app_name"></activity>
+            android:configChanges="orientation|keyboardHidden" >
+            <!--android:label="@string/app_name">-->
+        </activity>
     </application>
 
 </manifest>

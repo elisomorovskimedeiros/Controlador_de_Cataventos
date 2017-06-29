@@ -5,36 +5,21 @@ import android.net.IpPrefix;
 import java.net.InetAddress;
 
 /**
- * Created by ifrs on 08/06/2017.
+ * Classe que representa o servidor que está do outro lado da conexão
  */
 
 public class Controlador {
 
     public static Controlador controlador;
     private boolean statusControlador;
-    //private InetAddress ipControlador;
     private String ip;
-
     public String getIp() {  return ip; }
-
     public void setIp(String ip) {  this.ip = ip; }
-
     public boolean isStatusControlador() {
         return statusControlador;
     }
+    public void setStatusControlador(boolean statusControlador) {  this.statusControlador = statusControlador;  }
 
-    public void setStatusControlador(boolean statusControlador) {
-        this.statusControlador = statusControlador;
-    }
-/*
-    public InetAddress getIpControlador() {
-        return ipControlador;
-    }
-
-    public void setIpControlador(InetAddress ipControlador) {
-        this.ipControlador = ipControlador;
-    }
-*/
     @Override
     public String toString() {
         return "Controlador{" +

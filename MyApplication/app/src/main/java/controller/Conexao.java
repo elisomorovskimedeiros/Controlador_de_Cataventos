@@ -2,13 +2,8 @@ package controller;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.example.ifrs.myapplication.MainActivity;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,17 +11,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
 import helpers.extensions.ObservableArrayList;
-import helpers.extensions.listeners.EChange;
-import helpers.extensions.listeners.IArrayChangeListener;
 import model.Controlador;
-
 import static controller.Constantes.NA_ESCUTA;
 
 
 /**
- * Created by eli on 06/05/17.
+ * CLASSE CONEXÃO NA QUAL ESTÃO OS MÉTODOS DE CONEXÃO DO SOCKET COM O SERVIDOR, A PORTA UTILIZADA É A 3333
  */
 
 public class Conexao{
@@ -87,12 +78,7 @@ public class Conexao{
                 ", lista=" + lista +
                 '}';
     }
-/*
-    public Conexao(Controlador controlador, int portaConexao, char comando){
-        this.controlador = controlador;
-        this.portaConexao = portaConexao;
-        this.comando = comando;
-    }*/
+
 
 //SINGLETON
     public static Conexao getInstance(){
@@ -104,25 +90,15 @@ public class Conexao{
             conexao.lista = new ObservableArrayList<>();
             conexao.lista.add("false:0:0");
             return conexao;
-            //return new Conexao(arduino, 3333, comandoRecebido);
         }
         else {
             return conexao;
         }
     }
 
-
+//CLASSE QUE EXECUTA A CONEXÃO
     public void executar(){
-      /*  lista = new ObservableArrayList<>();
-        lista.addChangeListener(new IArrayChangeListener<String>() {
-
-            @Override
-            public void onChange(EChange action, String changed) {
-                if(action == EChange.added){
-                    //...
-                }
-            }
-        });*/
+    // A conexão é feita em background, através do instanciamento de um AsyncTask
         new AsyncTask<Conexao, Conexao, Conexao> () {
             @Override
             protected void onPreExecute() {}
@@ -130,7 +106,6 @@ public class Conexao{
             @Override
             protected Conexao doInBackground(Conexao... paramss)
             {
-               // ObservableArrayList<String> lista = paramss[0];
                 Conexao conexao = paramss[0];
                 Socket socket = null;
 
@@ -138,27 +113,17 @@ public class Conexao{
                     Log.i("Controlador", conexao.controlador.toString());
                     socket = new Socket(conexao.controlador.getIp(), conexao.getPortaConexao());
 
-                    //Log.i("Conexao", conexao.toString());
+
                     if (socket.isConnected()){
                         conexao.setStatusRede(true);
                     }
 
-
-                    /*OutputStreamWriter envioW = new OutputStreamWriter(envio);
-                    BufferedWriter bfw = new BufferedWriter(envioW);
-                    bfw.write(conexao.getComando());
-
-                    InputStream recebimento = socket .getInputStream();
-                    InputStreamReader inr = new InputStreamReader(recebimento);
-                    BufferedReader bfr = new BufferedReader(inr);*/
-
-                    //DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-
+                    //processo de envio de dados pela rede
                     OutputStream ou = socket.getOutputStream();
                     OutputStreamWriter ouw = new OutputStreamWriter(ou);
                     BufferedWriter bfw = new BufferedWriter(ouw);
 
-
+                    //processo de recebimento dos dados pela rede
                     InputStream in = socket.getInputStream();
                     InputStreamReader inr = new InputStreamReader(in);
                     BufferedReader bfr = new BufferedReader(inr);
@@ -166,13 +131,10 @@ public class Conexao{
 
 
 
-
+                    //com o while (true) o sistema fica sempre escutando se está chegando nova mensagem
                     while(true){
 
-                        bfw.write(NA_ESCUTA + "\r\n");
-
-
-
+                        bfw.write(conexao.getComando() + "\r\n");
 
                             if(bfr.ready()) {
                                 msg = bfr.readLine();
@@ -186,68 +148,24 @@ public class Conexao{
                                         lista.clear();
                                     }
                                     conexao.lista.add(msg);
-
                                 }
-
-
                             }
-
-
                         bfw.flush();
 
-/*
-                        if(bfr.ready()) {
-                            msg = bfr.readLine();
 
-                        }
-                        Log.i("Mensagem", msg);
-
-                        /*
-                        if(bfr.ready()){
-                            conexao.setResposta(bfr.readLine());
-                        }
-                        bfw.write(conexao.getComando());
-                        dos.writeChar(NA_ESCUTA);
-                        Log.i("Conexao", conexao.toString());*/
-
+                    //nessa linha o publishProgress atualiza sempre o objeto conexão para que a classe principal tenha acesso as leituras
+                        //recebidas do servidor
                         publishProgress(conexao);
                         Thread.sleep(2000);
                     }
 
-/*
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1);
-                    byte[] enviaComando = new byte[1];
-                    enviaComando[0] = (byte) conexao.getComando();
-                    byte[] recebeParametro = new byte[15];
-                    String resposta = "";
-                    int leituraDados;
-                    InputStream inputStream = socket.getInputStream();
-                    OutputStream outputStream = socket.getOutputStream();
-
-
-                    while(true){
-                        inputStream = socket.getInputStream();
-                        outputStream = socket.getOutputStream();
-                        leituraDados = inputStream.read(recebeParametro);
-                        //leituraDados = inputStream.read(buffer);
-                        byteArrayOutputStream.write(enviaComando);
-                        //byteArrayOutputStream.write(enviaComando, 0 , leituraDados);
-                        Log.i("Conexao", conexao.toString());
-                        //resposta += byteArrayOutputStream.toString();
-                        //conexao.setStatusRede(true);
-                       // lista.add(resposta);
-                        publishProgress(conexao);
-                    }*/
-
 
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
-                    //resposta = "Host não encontrado! Excessão encontrada: " + e.toString();
-                    //conexao.statusRede = false;
+
                 } catch (IOException e) {
                     e.printStackTrace();
-                    //resposta = "Host não encontrado! Excessão encontrada: " + e.toString();
-                    //conexao.statusRede = false;
+
                 }
 
 
@@ -259,81 +177,16 @@ public class Conexao{
                 return null;
             }
 
-                //@Override
+
             protected void onProgressUpdate(Conexao... progress) {
                 Log.i("Conexao", conexao.toString());
 
 
-                //conexao = progress[0];
-                Conexao.conexao = conexao;
+
             }
 
-            //@Override
+
             protected void onPostExecute(Void result) {}
         }.execute(this.conexao, this.conexao, this.conexao);
     }
 }
-
-
-
-
-
-
-/*
-    @Override
-    protected Void doInBackground(Void... arg0) {
-        Socket socket = null;
-        Void respostaLocal;
-
-
-        try{
-            //socket = new Socket(controlador.getIpControlador(), portaConexao);
-            socket = new Socket("192.168.1.5", portaConexao);
-
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
-            byte[] buffer = new byte[1024];
-            int leituraDados;
-            InputStream inputStream = socket.getInputStream();
-            while ((leituraDados = inputStream.read(buffer)) != -1){
-                byteArrayOutputStream.write(buffer, 0, leituraDados);
-                resposta +=  byteArrayOutputStream.toString("UTF-8");
-            }
-            statusRede = true;
-
-        }catch (UnknownHostException e){
-            e.printStackTrace();
-            resposta = "Host não encontrado! Excessão encontrada: " + e.toString();
-            statusRede = false;
-        }
-        catch (IOException a){
-            a.printStackTrace();
-            resposta = "Falha de IO! Excessão encontrada: " + a.toString();
-            statusRede = false;
-        }
-        finally {
-            if (socket != null){
-                try {
-                    socket.close();
-                }catch(IOException i){
-                    i.printStackTrace();
-                }
-            }
-        }
-
-        return null;
-    }
-
-    protected void onPostExecute(Void resultado){
-        //textoResposta.setText(resposta);
-        super.onPostExecute(resultado);
-    }
-
-    public void sendData(String data, Socket socket) throws IOException {
-        if (socket != null && socket.isConnected()) {
-            OutputStream os = null;
-            os.write(data.getBytes());
-        }
-    }
-
-
-}*/
